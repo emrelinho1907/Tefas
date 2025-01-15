@@ -185,9 +185,11 @@ class FonWidget(QFrame):
         super().__init__(parent)
         self.setStyleSheet("background-color: #2c3e50;")
         self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(5, 5, 5, 5)
         
         # Üst kısım - Fon seçimi
         top_frame = QFrame()
+        top_frame.setFixedHeight(50)  # Set fixed height for top frame
         top_frame.setStyleSheet("background-color: #34495e;")
         top_layout = QHBoxLayout(top_frame)
         
@@ -236,7 +238,8 @@ class FonWidget(QFrame):
         # Alt kısım - Fon bilgileri için tek bir frame
         self.data_frame = QFrame()
         self.data_frame.setStyleSheet("background-color: #34495e;")
-        self.data_layout = QVBoxLayout(self.data_frame)  # Changed to QVBoxLayout
+        self.data_layout = QVBoxLayout(self.data_frame)
+        self.data_layout.setContentsMargins(5, 5, 5, 5)  # Reduced margins
         self.layout.addWidget(self.data_frame)
 
     def fetch_fund_data(self):
@@ -257,15 +260,16 @@ class FonWidget(QFrame):
                     QFrame {
                         background-color: #2c3e50;
                         border-radius: 5px;
-                        padding: 10px;
+                        padding: 5px;
                     }
                 """)
                 main_layout = QVBoxLayout(main_frame)
-                main_layout.setSpacing(10)
+                main_layout.setSpacing(5)  # Reduced spacing
                 
                 # Fon başlığı
                 if "Fon Adı" in veri:
                     header = QLabel(veri["Fon Adı"])
+                    header.setFixedHeight(40)  # Fixed height for header
                     header.setStyleSheet("""
                         color: #3498db;
                         font-size: 16px;
@@ -280,30 +284,30 @@ class FonWidget(QFrame):
                 # Fon verileri grid
                 data_widget = QWidget()
                 data_layout = QGridLayout(data_widget)
-                data_layout.setSpacing(8)
-                data_layout.setContentsMargins(10, 10, 10, 10)
+                data_layout.setSpacing(5)  # Reduced spacing
+                data_layout.setContentsMargins(5, 5, 5, 5)  # Smaller margins
                 
                 # Normal verileri gride yerleştir
                 row = 0
                 col = 0
-                max_cols = 3  # Her satırda 3 veri
+                max_cols = 4  # Increased columns for better layout
                 
                 for key, value in veri.items():
                     if not 'Getiri' in key and key != "Fon Adı":
                         item_widget = QWidget()
                         item_layout = QHBoxLayout(item_widget)
-                        item_layout.setContentsMargins(5, 5, 5, 5)
+                        item_layout.setContentsMargins(2, 2, 2, 2)
+                        item_layout.setSpacing(2)
                         
                         key_label = QLabel(f"{key}:")
-                        key_label.setStyleSheet("color: #95a5a6; font-weight: bold;")
-                        key_label.setFixedWidth(150)
+                        key_label.setStyleSheet("color: #95a5a6; font-size: 11px;")
+                        key_label.setFixedWidth(120)  # Reduced width
                         
                         value_label = QLabel(str(value))
-                        value_label.setStyleSheet("color: #2ecc71; font-weight: bold;")
+                        value_label.setStyleSheet("color: #2ecc71; font-size: 11px; font-weight: bold;")
                         
                         item_layout.addWidget(key_label)
                         item_layout.addWidget(value_label)
-                        item_layout.addStretch()
                         
                         data_layout.addWidget(item_widget, row, col)
                         
@@ -317,28 +321,38 @@ class FonWidget(QFrame):
                 # Getiri verileri
                 returns_widget = QWidget()
                 returns_layout = QHBoxLayout(returns_widget)
-                returns_layout.setSpacing(5)
-                returns_layout.setContentsMargins(0, 10, 0, 0)
+                returns_layout.setSpacing(10)  # Increased spacing
+                returns_layout.setContentsMargins(0, 10, 0, 0)  # Added top margin
+                returns_layout.setAlignment(Qt.AlignCenter)  # Center alignment
                 
                 for key, value in veri.items():
                     if 'Getiri' in key:
                         return_frame = QFrame()
+                        return_frame.setFixedSize(150, 80)  # Increased size
                         return_frame.setStyleSheet("""
                             QFrame {
                                 background-color: #34495e;
                                 border-radius: 4px;
-                                padding: 8px;
+                                padding: 4px;
                             }
                         """)
                         return_layout = QVBoxLayout(return_frame)
-                        return_layout.setSpacing(5)
+                        return_layout.setSpacing(2)
+                        return_layout.setContentsMargins(2, 2, 2, 2)
                         
                         period_label = QLabel(key)
-                        period_label.setStyleSheet("color: #95a5a6; font-size: 11px;")
+                        period_label.setStyleSheet("color: #95a5a6; font-size: 12px;")  # Increased font size
                         period_label.setAlignment(Qt.AlignCenter)
                         
+                        # Parse value and set color based on positivity
+                        try:
+                            value_float = float(value.replace('%', '').replace(',', '.'))
+                            color = "#2ecc71" if value_float >= 0 else "#e74c3c"  # Green if positive, red if negative
+                        except:
+                            color = "#3498db"  # Default blue if parsing fails
+                        
                         value_label = QLabel(value)
-                        value_label.setStyleSheet("color: #3498db; font-size: 16px; font-weight: bold;")
+                        value_label.setStyleSheet(f"color: {color}; font-size: 16px; font-weight: bold;")  # Increased font size
                         value_label.setAlignment(Qt.AlignCenter)
                         
                         return_layout.addWidget(period_label)
@@ -380,8 +394,8 @@ class MainWindow(QMainWindow):
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(5)  # Reduced spacing
+        layout.setContentsMargins(5, 5, 5, 5)  # Smaller margins
 
         doviz_widget = DovizWidget()
         layout.addWidget(doviz_widget)
